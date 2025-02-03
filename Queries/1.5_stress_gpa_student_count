@@ -12,19 +12,29 @@ FROM student_lifestyle
 ORDER BY gpa DESC
 LIMIT 100;
 
+ALTER TABLE student_lifestyle 
+ADD COLUMN Stress_Level_Numeric INT;
+UPDATE student_lifestyle
+SET Stress_Level_Numeric = 
+    CASE 
+        WHEN Stress_Level = 'Low' THEN 1
+        WHEN Stress_Level = 'Moderate' THEN 2
+        WHEN Stress_Level = 'High' THEN 3
+    END;
+
 SELECT 
     stress_level,
     CASE 
-        WHEN gpa >= 3.7 THEN 'Above Average'
-        WHEN gpa >= 3.0 AND gpa < 3.7 THEN 'Average'
-        WHEN gpa >=2.0 AND gpa <3.0 THEN 'Fair'
+        WHEN gpa >= 3.7 THEN 'Excellent'
+        WHEN gpa >= 3.0 AND gpa < 3.7 THEN 'Above Average'
+        WHEN gpa >=2.0 AND gpa <3.0 THEN 'Average'
         WHEN gpa >=1.0 AND gpa <2.0 THEN 'Below Average'
         WHEN gpa >=0.0 AND gpa <1.0 THEN 'Failing'
     END AS gpa_category,
     COUNT(student_id) AS student_count
 FROM student_lifestyle
 GROUP BY stress_level, gpa_category,stress_level_numeric
-ORDER BY stress_level_numeric DESC;
+ORDER BY gpa_category DESC;
 
 /*
 1️⃣ Moderate stress may not drive academic success
@@ -40,4 +50,6 @@ Indicates stress alone is not the key factor for success.
 Majority of Low-Stress students have Fair GPAs.
 Could mean that too little stress leads to a lack of motivation or discipline.
 */
+
+
 

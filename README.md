@@ -27,9 +27,8 @@ ORDER BY gpa_category DESC;
 ```
 ### Creating Lifestyle Groups
 We classified lifestyle types based on four key aspects: study hours, sleep hours, social hours, and physical activity hours. Each aspect was categorized into low or high, with the median serving as the threshold. Values above the median and below the maximum were classified as high, while values below the median but above the minimum were classified as low. The cutoff values for each category are as follows:
-https://github.com/SkyKur/Student_Lifestyle_Analysis/blob/main/README.md
 
-![Lifestyle Types](Queries/Assets/Lifestyle_Type.png)
+![Lifestyle Types](Lifestyle_Type.png)
 
 ## Analysis
 The data suggests a link between stress and GPA. High-stress students are most common in the "Above Average" category (815 students), implying stress may drive academic performance. Moderate stress is more evenly distributed across "Average" and "Above Average" GPAs, while low-stress students are least likely to achieve "Above Average" (55 students). Few students reach "Excellent" GPAs, regardless of stress, indicating top performance may require a balance between stress and motivation.   

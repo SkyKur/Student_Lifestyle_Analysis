@@ -27,6 +27,7 @@ ORDER BY gpa_category DESC;
 ```
 ### Creating Lifestyle Groups
 We classified lifestyle types based on four key aspects: study hours, sleep hours, social hours, and physical activity hours. Each aspect was categorized into low or high, with the median serving as the threshold. Values above the median and below the maximum were classified as high, while values below the median but above the minimum were classified as low. The cutoff values for each category are as follows:
+https://github.com/SkyKur/Student_Lifestyle_Analysis/blob/main/README.md
 
 ![Lifestyle Types](Queries/Assets/Lifestyle_Type.png)
 

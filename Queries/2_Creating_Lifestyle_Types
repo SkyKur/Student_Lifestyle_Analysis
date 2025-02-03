@@ -5,20 +5,9 @@ SELECT COUNT(*) AS num_of_outliers
 FROM student_lifestyle
 WHERE GPA > (SELECT AVG(GPA) + 2 * STDDEV(GPA) FROM student_lifestyle)
    OR GPA < (SELECT AVG(GPA) - 2 * STDDEV(GPA) FROM student_lifestyle);
---160 outliers out of 4000 students
+--80 outliers out of 2000 students
 
-/* Best combination */
---Convert stress level to numeric values
-ALTER TABLE student_lifestyle 
-ADD COLUMN Stress_Level_Numeric INT;
 
-UPDATE student_lifestyle
-SET Stress_Level_Numeric = 
-    CASE 
-        WHEN Stress_Level = 'Low' THEN 1
-        WHEN Stress_Level = 'Moderate' THEN 2
-        WHEN Stress_Level = 'High' THEN 3
-    END;
 
 SELECT 
     MIN(Study_Hours_Per_Day) AS min_study_hours,
@@ -164,6 +153,19 @@ SELECT COUNT(student_id) AS student_count,
 FROM student_lifestyle
 GROUP BY Lifestyle_Type
 ORDER BY student_count DESC;
+
+SELECT *
+FROM student_lifestyle
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -69,9 +69,9 @@ The data suggests a link between stress and GPA. High-stress students are most c
 ***Query***: [Averages for Lifestyle Types](/Queries/2.5_avg_by_types)
 
 
-![Average GPA By Lifestyle Type](Queries/Assets/output.png)
+![Average GPA By Lifestyle Type](output.png)
 
-![Average Stress Level By Lifestyle Type](Queries/Assets/output-2.png)
+![Average Stress Level By Lifestyle Type](output-2.png)
 
 # Discussion
 ### 1. Academic Success is Closely Tied to Sleep & Study Habits

@@ -14,30 +14,3 @@ FROM student_lifestyle
 GROUP BY Lifestyle_Type
 ORDER BY avg_gpa DESC;
 
-SELECT *
-FROM student_lifestyle
-/*
-🔹 General Observations
-
-Higher GPA tends to be linked with higher study hours.
-Top GPA groups (3.3+): "Studious Sleeper", "Sleepy Studier", "High-Performance Student".
-Lowest GPA groups (below 2.9): "Well-Balanced", "Fitness Enthusiast", "Active Socializer".
-Higher stress is associated with more study time & less sleep.
-Most stressed (Avg Stress >2.85): "Sleepy Studier", "Studious Sleeper", "Busy Achiever".
-Least stressed (Avg Stress <1.7): "Well-Balanced", "Fitness Enthusiast", "Social Scholar".
-More social hours tend to correlate with lower GPAs.
-"Social Butterfly", "Social Scholar", and "Active Socializer" all have high social hours (4.0+) and lower GPAs (~2.9-3.0).
-More physical activity does not strongly correlate with high GPA but tends to reduce stress.
-"Energetic Performer" (8.24 hours of physical activity) has low GPA (2.94) but relatively moderate stress (2.15).
-*/
-
-SELECT
-    SUM(student_count) AS total_students
-FROM 
-    (SELECT Lifestyle_Type,
-        COUNT(*) AS student_count
-    FROM student_lifestyle
-    GROUP BY Lifestyle_Type) AS lifestyle_counts;
-
-SELECT COUNT(*)
-FROM student_lifestyle

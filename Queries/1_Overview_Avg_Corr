@@ -1,0 +1,53 @@
+SELECT 
+    stress_level,
+    COUNT(student_id) AS student_count,
+    ROUND(AVG(Extracurricular_Hours_Per_Day)::NUMERIC, 2) AS avg_extracurricular_hours, 
+    ROUND(AVG(GPA)::NUMERIC, 2) AS avg_gpa,
+    ROUND(AVG(Sleep_Hours_Per_Day)::NUMERIC, 2) AS avg_sleep_hours,
+    ROUND(AVG(Study_Hours_Per_Day)::NUMERIC, 2) AS avg_study_hours,
+    ROUND(AVG(social_hours_per_day)::NUMERIC, 2) AS avg_social_hours,
+    ROUND(AVG(Physical_Activity_Hours_Per_Day)::NUMERIC, 2) AS avg_physical_activity_hours
+FROM student_lifestyle
+GROUP BY stress_level;
+
+SELECT 
+    ROUND(corr(Stress_Level_Numeric, Study_Hours_Per_Day)::NUMERIC, 2) AS stress_study,
+    ROUND(corr(Stress_Level_Numeric, Sleep_Hours_Per_Day)::NUMERIC, 2) AS stress_sleep,
+    ROUND(corr(Stress_Level_Numeric, Social_Hours_Per_Day)::NUMERIC, 2) AS stress_social,
+    ROUND(corr(Stress_Level_Numeric, Extracurricular_Hours_Per_Day)::NUMERIC, 2) AS stress_extracurricular,
+    ROUND(corr(Stress_Level_Numeric, Physical_Activity_Hours_Per_Day)::NUMERIC, 2) AS stress_physical_activity,
+    ROUND(corr(Stress_Level_Numeric, gpa)::NUMERIC, 2) AS stress_gpa
+
+FROM student_lifestyle;
+-- Study, sleep, physical,GPA
+
+SELECT 
+    ROUND(corr(gpa, Study_Hours_Per_Day)::NUMERIC, 2) AS gpa_study,
+    ROUND(corr(gpa, Sleep_Hours_Per_Day)::NUMERIC, 2) AS gpa_sleep,
+    ROUND(corr(gpa, Social_Hours_Per_Day)::NUMERIC, 2) AS gpa_social,
+    ROUND(corr(gpa, Extracurricular_Hours_Per_Day)::NUMERIC, 2) AS gpa_extracurricular,
+    ROUND(corr(gpa, Physical_Activity_Hours_Per_Day)::NUMERIC, 2) AS gpa_physical_activity
+
+FROM student_lifestyle;
+-- Study, physical
+
+s
+/*
+
+Study hours drive both higher stress and higher GPA.
+More sleep might help reduce stress but won’t necessarily boost GPA.
+Social and extracurricular activities don’t majorly impact GPA but could provide mental balance.
+Physical activity may help lower stress but could negatively impact GPA if too time-consuming.
+
+✅ For Students Who Want to Reduce Stress:
+
+Consider reducing excessive study hours and focusing on efficient learning strategies.
+Improve sleep routines as it might help in stress management.
+Engage in physical activity, even though the effect is not strong.
+✅ For Students Who Want to Improve GPA:
+
+Study time matters the most—students should prioritize effective study habits.
+Sleep does not impact GPA, but a balanced routine is still good for well-being.
+Physical activity and social life should be balanced, as excessive involvement might 
+reduce academic performance.
+*/

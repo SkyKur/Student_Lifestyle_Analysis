@@ -1,0 +1,43 @@
+/* Does higher stress_level necessary means avg_gpa?
+🏆 3.7–4.0: Excellent/Outstanding
+🌟 3.0–3.6: Good/Above Average
+👍 2.0–2.9: Average/Fair
+⚠️ 1.0–1.9: Below Average
+🚫 0.0–0.9: Poor/Failing
+*/
+SELECT 
+    stress_level,
+    gpa
+FROM student_lifestyle
+ORDER BY gpa DESC
+LIMIT 100;
+
+SELECT 
+    stress_level,
+    CASE 
+        WHEN gpa >= 3.7 THEN 'Above Average'
+        WHEN gpa >= 3.0 AND gpa < 3.7 THEN 'Average'
+        WHEN gpa >=2.0 AND gpa <3.0 THEN 'Fair'
+        WHEN gpa >=1.0 AND gpa <2.0 THEN 'Below Average'
+        WHEN gpa >=0.0 AND gpa <1.0 THEN 'Failing'
+    END AS gpa_category,
+    COUNT(student_id) AS student_count
+FROM student_lifestyle
+GROUP BY stress_level, gpa_category,stress_level_numeric
+ORDER BY stress_level_numeric DESC;
+
+/*
+1️⃣ Moderate stress may not drive academic success
+
+Almost no "Above Average" GPA students in the Moderate Stress group.
+Could suggest that a little stress is beneficial, but too much is counterproductive.
+2️⃣ High stress doesn’t guarantee high performance
+
+Despite high stress levels, only 94 students in this category achieved "Above Average" GPA.
+Indicates stress alone is not the key factor for success.
+3️⃣ Low stress may lead to disengagement from studies
+
+Majority of Low-Stress students have Fair GPAs.
+Could mean that too little stress leads to a lack of motivation or discipline.
+*/
+

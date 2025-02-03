@@ -1,0 +1,177 @@
+SELECT COUNT(*) AS num_of_students
+FROM student_lifestyle;
+
+SELECT COUNT(*) AS num_of_outliers
+FROM student_lifestyle
+WHERE GPA > (SELECT AVG(GPA) + 2 * STDDEV(GPA) FROM student_lifestyle)
+   OR GPA < (SELECT AVG(GPA) - 2 * STDDEV(GPA) FROM student_lifestyle);
+--160 outliers out of 4000 students
+
+/* Best combination */
+--Convert stress level to numeric values
+ALTER TABLE student_lifestyle 
+ADD COLUMN Stress_Level_Numeric INT;
+
+UPDATE student_lifestyle
+SET Stress_Level_Numeric = 
+    CASE 
+        WHEN Stress_Level = 'Low' THEN 1
+        WHEN Stress_Level = 'Moderate' THEN 2
+        WHEN Stress_Level = 'High' THEN 3
+    END;
+
+SELECT 
+    MIN(Study_Hours_Per_Day) AS min_study_hours,
+    MAX(Study_Hours_Per_Day) AS max_study_hours,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY study_hours_per_day) AS percentile_25,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY study_Hours_Per_Day) AS median_50,  -- Median
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY study_Hours_Per_Day) AS percentile_75
+FROM student_lifestyle;
+/* 
+Low:5-6.3 hrs
+Moderate: 6.3-7.4 hrs
+High: 7.4-8.7 hrs
+Extreme: 8.7-10 hrs
+*/
+SELECT 
+    MIN(Sleep_Hours_Per_Day) AS min_sleep_hours,
+    MAX(Sleep_Hours_Per_Day) AS max_sleep_hours,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY Sleep_Hours_Per_Day) AS percentile_25,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY Sleep_Hours_Per_Day) AS median_50,  -- Median
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY Sleep_Hours_Per_Day) AS percentile_75
+FROM student_lifestyle;
+/*
+Low: 5-6.2 hrs
+Moderate: 6.2-7.5 hrs
+High: 7.5-8.8 hrs
+Extreme: 8.8-10 hrs
+*/
+SELECT 
+    MIN(social_hours_per_day) AS min_social_hours,
+    MAX(social_hours_per_day) AS max_social_hours,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY social_hours_per_day) AS percentile_25,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY social_hours_per_day) AS median_50,  -- Median
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY social_hours_per_day) AS percentile_75
+FROM student_lifestyle;
+/*
+Low: 0-1.2 hrs 
+Moderate: 1.2-2.6 hrs
+High: 2.6 hrs-4.1 hrs
+Extreme: 4.1hrs-6 hrs
+*/
+SELECT 
+    MIN(physical_activity_hours_per_day) AS min_physical_hours,
+    MAX(physical_activity_hours_per_day) AS max_physical_hours,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY physical_activity_hours_per_day) AS percentile_25,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY physical_activity_hours_per_day) AS median_50,  -- Median
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY physical_activity_hours_per_day) AS percentile_75
+FROM student_lifestyle;
+/*
+Low: 0-2.4 hrs 
+Moderate: 2.4-4.1 hrs
+High: 4.1-6.1 hrs
+Extreme: 6.1-13 hrs
+*/
+
+-- Ensure the Lifestyle_Type column exists before updating
+ALTER TABLE student_lifestyle ADD COLUMN IF NOT EXISTS Lifestyle_Type TEXT;
+
+UPDATE student_lifestyle
+SET Lifestyle_Type = 
+    CASE 
+        -- 📚 Studious Sleeper
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Studious Sleeper'
+
+        -- 🎓 High-Performance Student
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'High-Performance Student'
+
+        -- 🏆 Academic Athlete
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Academic Athlete'
+
+        -- 🔥 All-Rounder
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'All-Rounder'
+
+        -- 😴 Sleepy Studier
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Sleepy Studier'
+
+        -- 📖 Busy Achiever
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Busy Achiever'
+
+        -- 💪 Fitness-Focused Achiever
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Fitness-Focused Achiever'
+
+        -- 🚀 Driven Performer
+        WHEN Study_Hours_Per_Day > 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Driven Performer'
+
+        -- 📕 Relaxed Learner
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Relaxed Learner'
+
+        -- 🎭 Social Scholar
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Social Scholar'
+
+        -- 🏋️ Fitness Enthusiast
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Fitness Enthusiast'
+
+        -- 🎉 Well-Balanced
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day > 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Well-Balanced'
+
+        -- ⚡ Sleepless Worker
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Sleepless Worker'
+
+        -- 🗣️ Social Butterfly
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day > 2.6 AND Physical_Activity_Hours_Per_Day <= 4.1
+        THEN 'Social Butterfly'
+
+        -- 💥 Energetic Performer
+        WHEN Study_Hours_Per_Day <= 7.4 AND Sleep_Hours_Per_Day <= 7.5 
+             AND Social_Hours_Per_Day <= 2.6 AND Physical_Activity_Hours_Per_Day > 4.1
+        THEN 'Energetic Performer'
+
+        -- 🌟 Active Socializer
+        ELSE 'Active Socializer'
+    END;
+
+-- Count the number of students in each lifestyle category
+SELECT COUNT(student_id) AS student_count,
+       Lifestyle_Type
+FROM student_lifestyle
+GROUP BY Lifestyle_Type
+ORDER BY student_count DESC;
+
+
+
+
+
+
+
+
+
+
+
